@@ -16,7 +16,7 @@ app = Flask(__name__)
 @app.route('/', methods=['GET'])
 def return_home():
     if 'authentifie' in session and session['authentifie']:
-        return render_template('home.html')
+        return render_template('hello.html')
     else:
         return redirect(url_for('authentification'))
 
