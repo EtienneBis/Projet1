@@ -15,21 +15,23 @@
 
 
 
-from flask import Flask, render_template, redirect, url_for, request, session
+
+from flask import Flask, render_template, redirect, url_for, request
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
-app.secret_key = 'b_45[y2L"B4Q8z\n\zf#/'  # Clé secrete
+app.secret_key = 'b_45[y2L"B4Q8z\n\zf#/'  # Clé secrète
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = 'login'  # Page de redirection si non connecté
 
+# Utilisateurs fictifs (à remplacer par une gestion réelle des utilisateurs)
 users = {
     'user1': {'password': generate_password_hash('password')},
     'user2': {'password': generate_password_hash('anotherpassword')}
 }
-
 
 class User(UserMixin):
     def __init__(self, username):
@@ -37,7 +39,9 @@ class User(UserMixin):
 
 @login_manager.user_loader
 def load_user(username):
-    return User(username) if username in users else None
+    if username in users:
+        return User(username)
+    return None
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -48,7 +52,7 @@ def login():
         if user and check_password_hash(user['password'], password):
             login_user(User(username))
             return redirect(url_for('profile'))
-        return 'Invalid credentials'
+        return 'Invalid credentials', 401  # Ajout d'un statut HTTP en cas d'échec de connexion
     return render_template('login.html')
 
 @app.route('/profile')
@@ -61,6 +65,7 @@ def profile():
 def logout():
     logout_user()
     return redirect(url_for('login'))
+
 
 
 
