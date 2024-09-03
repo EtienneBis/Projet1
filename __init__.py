@@ -25,8 +25,11 @@ app.secret_key = 'b_45[y2L"B4Q8z\n\zf#/'  # Clé secrete
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-# Dummy user store (replace with your actual user management)
-users = {'user@example.com': {'password': generate_password_hash('password')}}
+users = {
+    'user1': {'password': generate_password_hash('password')},
+    'user2': {'password': generate_password_hash('anotherpassword')}
+}
+
 
 class User(UserMixin):
     def __init__(self, username):
