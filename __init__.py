@@ -1,22 +1,4 @@
-# from flask import Flask, render_template_string, render_template, jsonify, request, redirect, url_for, session
-# app = Flask(__name__)
-
-# @app.route('/')
-# def index():
-#     return render_template('test.html')
-
-# @app.route('/signin')
-# def signin():
-#     return render_template('signin.html')
-
-# @app.route('/signup')
-# def signup():
-#     return render_template('signup.html')
-
-
-
-
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template_string, render_template, jsonify, request, redirect, url_for, session
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -38,11 +20,29 @@ class User(UserMixin):
     def __init__(self, username):
         self.id = username
 
+
+
 @login_manager.user_loader
 def load_user(username):
     if username in users:
         return User(username)
     return None
+
+@app.route('/')
+def index():
+    return render_template('test.html')
+
+@app.route('/signin')
+def signin():
+    return render_template('signin.html')
+
+@app.route('/signup')
+def signup():
+    return render_template('signup.html')
+
+
+
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
