@@ -1,24 +1,81 @@
-from flask import Flask, render_template_string, render_template, jsonify, request, redirect, url_for, session
+# from flask import Flask, render_template_string, render_template, jsonify, request, redirect, url_for, session
+# app = Flask(__name__)
+
+# @app.route('/')
+# def index():
+#     return render_template('test.html')
+
+# @app.route('/signin')
+# def signin():
+#     return render_template('signin.html')
+
+# @app.route('/signup')
+# def signup():
+#     return render_template('signup.html')
+
+
+
+from flask import Flask, render_template, redirect, url_for, request, session
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from werkzeug.security import check_password_hash, generate_password_hash
+
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'  # Change this to a random secret key
 
-@app.route('/')
-def index():
-    return render_template('test.html')
+login_manager = LoginManager()
+login_manager.init_app(app)
 
-@app.route('/signin')
-def signin():
-    return render_template('signin.html')
+# Dummy user store (replace with your actual user management)
+users = {'user@example.com': {'password': generate_password_hash('password')}}
 
-@app.route('/signup')
-def signup():
-    return render_template('signup.html')
+class User(UserMixin):
+    def __init__(self, email):
+        self.id = email
 
-@app.route('/', methods=['GET'])
-def return_home():
-    if 'authentifie' in session and session['authentifie']:
-        return render_template('home.html')
-    else:
-        return redirect(url_for('authentification'))
+@login_manager.user_loader
+def load_user(email):
+    return User(email) if email in users else None
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        user = users.get(email)
+        if user and check_password_hash(user['password'], password):
+            login_user(User(email))
+            return redirect(url_for('profile'))
+        return 'Invalid credentials'
+    return render_template('login.html')
+
+@app.route('/profile')
+@login_required
+def profile():
+    return f'Hello, {current_user.id}!'
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
+
+
+
+
+
+
+
+# @app.route('/', methods=['GET'])
+# def return_home():
+#     if 'authentifie' in session and session['authentifie']:
+#         return render_template('home.html')
+#     else:
+#         return redirect(url_for('authentification'))
+
+
+
+
+
 
 
 
