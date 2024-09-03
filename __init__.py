@@ -21,7 +21,8 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
-app.secret_key = 'b_45[y2L"B4Q8z\nzzf#/'  # Clé secrète
+app.secret_key = r'b_45[y2L"B4Q8z\n\zf#/'  # Clé secrète
+
 
 login_manager = LoginManager()
 login_manager.init_app(app)
