@@ -20,7 +20,7 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Change this to a random secret key
+app.secret_key = 'b_45[y2L"B4Q8z\n\zf#/'  # Clé secrete
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -29,21 +29,21 @@ login_manager.init_app(app)
 users = {'user@example.com': {'password': generate_password_hash('password')}}
 
 class User(UserMixin):
-    def __init__(self, email):
-        self.id = email
+    def __init__(self, username):
+        self.id = username
 
 @login_manager.user_loader
-def load_user(email):
-    return User(email) if email in users else None
+def load_user(username):
+    return User(username) if username in users else None
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form['email']
+        username = request.form['username']
         password = request.form['password']
-        user = users.get(email)
+        user = users.get(username)
         if user and check_password_hash(user['password'], password):
-            login_user(User(email))
+            login_user(User(username))
             return redirect(url_for('profile'))
         return 'Invalid credentials'
     return render_template('login.html')
