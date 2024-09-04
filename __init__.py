@@ -10,7 +10,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'  # Page de redirection si non connecté
 
-# Utilisateurs fictifs (à remplacer par une gestion réelle des utilisateurs)
+# Utilisateurs fictifs, je dois remplacer ca
 users = {
     'user1': {'password': generate_password_hash('password')},
     'user2': {'password': generate_password_hash('anotherpassword')}
@@ -29,15 +29,22 @@ def load_user(username):
     return None
 
 @app.route('/')
-def index():
-    return render_template('test.html')
+def home():
+    return render_template('home.html')
 
-@app.route('/signin')
-def signin():
-    return render_template('signin.html')
+# @app.route('/signin')
+# def signin():
+#     return render_template('signin.html')
 
-@app.route('/signup')
+@app.route('/signup', methods=['GET', 'POST'])
 def signup():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        if username in users:
+            return 'Username already exists'
+        users[username] = {'password': generate_password_hash(password)}
+        return redirect(url_for('login'))
     return render_template('signup.html')
 
 
