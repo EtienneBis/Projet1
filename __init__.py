@@ -86,7 +86,7 @@ def logout():
 @app.route('/profile')
 @login_required
 def profile():
-    new_photo = Photo(filename=filename, user_id=current_user.id)
+    user_photos = Photo.query.filter_by(user_id=current_user.id).all()
     return render_template('profile.html', photos=user_photos)
 
 # Route pour upload une photo
