@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, redirect, url_for, render_template, flash
+from flask import Flask, request, redirect, url_for, render_template, flash, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.utils import secure_filename
@@ -89,7 +89,7 @@ def profile():
     user_photos = Photo.query.filter_by(owner=current_user).all()
     return render_template('profile.html', photos=user_photos)
 
-# Route pour télécharger une photo
+# Route pour upload une photo
 @app.route('/upload', methods=['GET', 'POST'])
 @login_required
 def upload_file():
@@ -109,6 +109,12 @@ def upload_file():
             db.session.commit()
             return redirect(url_for('profile'))
     return render_template('upload.html')
+
+# Route pour télécharger une photo
+@app.route('/download/<filename>')
+@login_required
+def download_photo(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 if __name__ == '__main__':
     app.run(debug=True)
