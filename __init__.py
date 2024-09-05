@@ -15,8 +15,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = os.path.join('static', 'images')
 
 # Créer le dossier si nécessaire
-if not os.path.exists(app.config['UPLOAD_FOLDER']):
-    os.makedirs(app.config['UPLOAD_FOLDER'])
+if not os.path.exists('database'):
+    os.makedirs('database')
 
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
