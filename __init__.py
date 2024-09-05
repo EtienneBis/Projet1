@@ -9,14 +9,15 @@ app = Flask(__name__)
 app.secret_key = r'b_45[y2L"B4Q8z\n\zf#/'  # Clé secrète
 
 # Configurer la base de données SQLite
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database/site.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 # Configurer le dossier pour les images téléchargées
 app.config['UPLOAD_FOLDER'] = os.path.join('static', 'images')
 
 # Créer le dossier si nécessaire
-if not os.path.exists('database'):
-    os.makedirs('database')
+if not os.path.exists(app.config['UPLOAD_FOLDER']):
+    os.makedirs(app.config['UPLOAD_FOLDER'])
 
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
