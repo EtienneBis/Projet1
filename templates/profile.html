@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Photos</title>
+</head>
+<body>
+    <h1>Hello, {{ current_user.id }}!</h1>
+    <h2>Your Photos</h2>
+    <form action="{{ url_for('upload_photo') }}" method="POST" enctype="multipart/form-data">
+        <input type="file" name="photo">
+        <button type="submit">Upload Photo</button>
+    </form>
+    <hr>
+    <div>
+        {% for photo in photos %}
+            <div>
+                <img src="{{ url_for('static', filename=photo) }}" alt="Photo" style="width:200px;height:auto;">
+                <a href="{{ url_for('download_photo', filename=photo) }}">Download</a>
+            </div>
+        {% endfor %}
+    </div>
+    <br>
+    <a href="{{ url_for('logout') }}">Logout</a>
+</body>
+</html>
