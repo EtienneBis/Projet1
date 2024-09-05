@@ -44,6 +44,11 @@ with app.app_context():
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+
+@app.route('/')
+def home():
+    return render_template('home.html')
+
 # Route d'inscription
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -58,7 +63,7 @@ def signup():
     return render_template('signup.html')
 
 # Route de connexion
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
