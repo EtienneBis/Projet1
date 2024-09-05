@@ -17,7 +17,7 @@
         {% for photo in photos %}
             <div>
                 <img src="{{ url_for('static', filename=photo) }}" alt="Photo" style="width:200px;height:auto;">
-                <a href="{{ url_for('download_photo', filename=photo) }}">Download</a>
+                <a href="{{ url_for('download_photo', filename=photo.filename) }}">Download</a>
             </div>
         {% endfor %}
     </div>
