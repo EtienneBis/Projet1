@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
-app.secret_key = 'votre_clé_secrète'
+app.secret_key = r'b_45[y2L"B4Q8z\n\zf#/'  # Clé secrète
 
 # Configurer la base de données SQLite
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
