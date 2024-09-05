@@ -1,151 +1,109 @@
-from flask import Flask, render_template_string, render_template, jsonify, request, redirect, url_for, session
+import os
+from flask import Flask, request, redirect, url_for, render_template, flash
+from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
-app.secret_key = r'b_45[y2L"B4Q8z\n\zf#/'  # Clé secrète
+app.secret_key = 'votre_clé_secrète'
 
+# Configurer la base de données SQLite
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = 'login'  # Page de redirection si non connecté
+# Configurer le dossier pour les images téléchargées
+app.config['UPLOAD_FOLDER'] = os.path.join('static', 'images')
 
-# Utilisateurs fictifs, je dois remplacer ca
-users = {
-    'user1': {'password': generate_password_hash('password')},
-    'user2': {'password': generate_password_hash('anotherpassword')}
-}
+# Créer le dossier si nécessaire
+if not os.path.exists(app.config['UPLOAD_FOLDER']):
+    os.makedirs(app.config['UPLOAD_FOLDER'])
 
-class User(UserMixin):
-    def __init__(self, username):
-        self.id = username
+db = SQLAlchemy(app)
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
 
+# Modèle utilisateur
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(150), unique=True, nullable=False)
+    password = db.Column(db.String(150), nullable=False)
+    photos = db.relationship('Photo', backref='owner', lazy=True)
 
+# Modèle photo
+class Photo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.String(150), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+# Créer les tables dans la base de données
+with app.app_context():
+    db.create_all()
 
 @login_manager.user_loader
-def load_user(username):
-    if username in users:
-        return User(username)
-    return None
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
-@app.route('/')
-def home():
-    return render_template('home.html')
-
-# @app.route('/signin')
-# def signin():
-#     return render_template('signin.html')
-
+# Route d'inscription
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        if username in users:
-            return 'Username already exists'
-        users[username] = {'password': generate_password_hash(password)}
+        hashed_password = generate_password_hash(password, method='sha256')
+        new_user = User(username=username, password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
         return redirect(url_for('login'))
     return render_template('signup.html')
 
-
-
-
-
+# Route de connexion
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        user = users.get(username)
-        if user and check_password_hash(user['password'], password):
-            login_user(User(username))
+        user = User.query.filter_by(username=username).first()
+        if user and check_password_hash(user.password, password):
+            login_user(user)
             return redirect(url_for('profile'))
-        return 'Invalid credentials', 401  # Ajout d'un statut HTTP en cas d'échec de connexion
+        flash('Invalid credentials')
     return render_template('login.html')
 
-@app.route('/profile')
-@login_required
-def profile():
-    return f'Hello, {current_user.id}!'
-
+# Route de déconnexion
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('login'))
 
+# Route pour le profil
+@app.route('/profile')
+@login_required
+def profile():
+    user_photos = Photo.query.filter_by(owner=current_user).all()
+    return render_template('profile.html', photos=user_photos)
 
-
-
-
-
-
-
-# @app.route('/', methods=['GET'])
-# def return_home():
-#     if 'authentifie' in session and session['authentifie']:
-#         return render_template('home.html')
-#     else:
-#         return redirect(url_for('authentification'))
-
-
-
-
-
-
-
-
-
-# @app.route('/sign_up', methods=['GET'])
-# def formulaire_client():
-#     return render_template('signup.html')
-
-# @app.route('/sign_up', methods=['POST'])
-# def enregistrer_client():
-#     login = request.form['login']
-#     password = request.form['password']
-
-#     conn = sqlite3.connect('database/database.db')
-#     cursor = conn.cursor()
-#     cursor.execute('INSERT INTO user (login, password) VALUES (?, ?)', (login, password))
-#     conn.commit()
-#     conn.close()
-#     user = verify_credentials(login, password)
-#     if user:
-#         session['authentifie'] = True
-#         session['user_id'] = user[0] 
-#         return redirect(url_for('ReadBDD'))
-    
-#     return redirect('/')
-
-# @app.route('/sign_in', methods=['GET', 'POST'])
-# def authentification():
-#     if request.method == 'POST':
-#         login = request.form['login']
-#         password = request.form['password']
-#         user = verify_credentials(login, password)
-#         if user:
-#             session['authentifie'] = True
-#             session['user_id'] = user[0] 
-#             return redirect('/')
-#         else:
-#             return render_template('signin.html', error=True)
-#     return render_template('signin.html', error=False)
-
-# @app.route('/sign_out', methods=['GET'])
-# def deconnexion_utilisateur():
-#     session['authentifie'] = False
-#     session['user_id'] = "" 
-#     return redirect('/')
-
-
-
-
-
-
-
-
-
+# Route pour télécharger une photo
+@app.route('/upload', methods=['GET', 'POST'])
+@login_required
+def upload_file():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file:
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            new_photo = Photo(filename=filename, owner=current_user)
+            db.session.add(new_photo)
+            db.session.commit()
+            return redirect(url_for('profile'))
+    return render_template('upload.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
