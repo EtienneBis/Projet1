@@ -58,7 +58,7 @@ def signup():
     return render_template('signup.html')
 
 # Route de connexion
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
