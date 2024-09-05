@@ -76,11 +76,14 @@ def login():
     return render_template('login.html')
 
 # Route de déconnexion
-@app.route('/logout')
+@app.route('/logout', methods=['GET', 'POST'])
 @login_required
 def logout():
     logout_user()
+    if request.method == 'POST':
+        return '', 204  # Code de statut HTTP pour "No Content" pour les requêtes AJAX
     return redirect(url_for('home'))
+
 
 # Route pour le profil
 @app.route('/profile')
