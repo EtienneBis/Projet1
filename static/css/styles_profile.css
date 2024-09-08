@@ -116,3 +116,46 @@ button[type="submit"]:hover {
     color: red;
     font-size: 14px;
 }
+
+
+
+
+
+
+/* Style pour le lien de déconnexion */
+a[href="{{ url_for('logout') }}"] {
+    display: inline-block;
+    background-color: #dc3545; /* Couleur rouge */
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+/* Changement de couleur au survol */
+a[href="{{ url_for('logout') }}"]:hover {
+    background-color: #c82333;
+    transform: scale(1.05);
+}
+
+/* Style pour les boutons de téléchargement */
+a[download] {
+    display: inline-block;
+    background-color: #007bff; /* Couleur bleue */
+    color: white;
+    padding: 10px 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: background-color 0.3s, transform 0.3s;
+    margin-top: 5px;
+}
+
+/* Changement de couleur au survol */
+a[download]:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
