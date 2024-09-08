@@ -5,31 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Photos</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_profile.css') }}">
-        <script>
-        function validateForm(event) {
-            var fileInput = document.getElementById('fileInput');
-            var file = fileInput.files.length;
-            if (file === 0) {
-                event.preventDefault(); // Prevent form submission
-                document.getElementById('error-message').innerText = 'Veuillez choisir une photo sur votre appareil.';
-            }
-        }
-    </script>
 </head>
 <body>
     <h1>Hello, {{ current_user.username }}!</h1>
     <h2>Your Photos</h2>
-    <form action="{{ url_for('upload_file') }}" method="POST" enctype="multipart/form-data" onsubmit="validateForm(event)">
-        <input type="file" name="file">
+    <form action="{{ url_for('upload_file') }}" method="POST" enctype="multipart/form-data">
+        <input type="file" name="photo" id="photo">
         <button type="submit">Upload Photo</button>
-        <p id="error-message" style="color: red;"></p>
+        {% if error_message %}
+            <p class="error">{{ error_message }}</p>
+        {% endif %}
     </form>
     <hr>
     <div class="photo-gallery">
         {% for photo in photos %}
-            <div>
-                <img src="{{ url_for('static', filename='images/' + photo.filename) }}" alt="Photo">
-                <br>
+            <div class="photo-item">
+                <img src="{{ url_for('static', filename='images/' ~ photo.filename) }}" alt="Photo">
                 <a href="{{ url_for('download_photo', filename=photo.filename) }}">Download</a>
             </div>
         {% endfor %}
@@ -38,4 +29,3 @@
     <a href="{{ url_for('logout') }}">Logout</a>
 </body>
 </html>
-
