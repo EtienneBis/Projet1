@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Photos</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_profile.css') }}">
-        <script>
+    <script>
         function validateForm(event) {
             var fileInput = document.getElementById('fileInput');
             var file = fileInput.files.length;
@@ -20,7 +20,7 @@
     <h1>Hello, {{ current_user.username }}!</h1>
     <h2>Your Photos</h2>
     <form action="{{ url_for('upload_file') }}" method="POST" enctype="multipart/form-data" onsubmit="validateForm(event)">
-        <input type="file" name="file">
+        <input type="file" id="fileInput" name="file">
         <button type="submit">Upload Photo</button>
         <p id="error-message" style="color: red;"></p>
     </form>
@@ -38,4 +38,3 @@
     <a href="{{ url_for('logout') }}">Logout</a>
 </body>
 </html>
-
