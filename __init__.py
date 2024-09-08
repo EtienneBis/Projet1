@@ -100,7 +100,7 @@ def upload_file():
             return redirect(request.url)
         file = request.files['file']
         if file.filename == '':
-            flash('No selected file')
+            flash('Veuillez choisir une photo sur votre appareil.')
             return redirect(request.url)
         if file:
             filename = secure_filename(file.filename)
@@ -110,6 +110,7 @@ def upload_file():
             db.session.commit()
             return redirect(url_for('profile'))
     return render_template('upload.html')
+
 
 # Route pour télécharger une photo
 @app.route('/download/<filename>')
