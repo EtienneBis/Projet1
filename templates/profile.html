@@ -18,7 +18,7 @@
 </head>
 <body>
     <h1>Hello, {{ current_user.username }}!</h1>
-    <h2>Your Photos</h2>
+    <h2>Vos Photos</h2>
     <form action="{{ url_for('upload_file') }}" method="POST" enctype="multipart/form-data" onsubmit="validateForm(event)">
         <input type="file" id="fileInput" name="file">
         <button type="submit">Upload Photo</button>
@@ -37,6 +37,6 @@
         {% endfor %}
     </div>
     <br>
-    <a href="{{ url_for('logout') }}">Logout</a>
+    <a href="{{ url_for('logout') }}">Déconnexion</a>
 </body>
 </html>
