@@ -32,10 +32,11 @@
             <div>
                 <img src="{{ url_for('static', filename='images/' + photo.filename) }}" alt="Photo">
                 <br>
-                <a href="{{ url_for('download_photo', filename=photo.filename) }}">Download</a>
+                <a href="{{ url_for('download_photo', filename=photo.filename) }}" download>Download</a>
             </div>
         {% endfor %}
     </div>
+
     <br>
     <a href="{{ url_for('logout') }}">Déconnexion</a>
 </body>
