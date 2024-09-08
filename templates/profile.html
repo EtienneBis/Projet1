@@ -22,7 +22,9 @@
     <form action="{{ url_for('upload_file') }}" method="POST" enctype="multipart/form-data" onsubmit="validateForm(event)">
         <input type="file" id="fileInput" name="file">
         <button type="submit">Upload Photo</button>
-        <p id="error-message" style="color: red;"></p>
+        <p id="error-message"></p>
+    </form>
+
     </form>
     <hr>
     <div class="photo-gallery">
