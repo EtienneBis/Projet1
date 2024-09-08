@@ -91,25 +91,24 @@ def profile():
     return render_template('profile.html', photos=user_photos)
 
 # Route pour upload une photo
-@app.route('/upload', methods=['GET', 'POST'])
+@app.route('/upload', methods=['POST'])
 @login_required
 def upload_file():
-    if request.method == 'POST':
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        if file.filename == '':
-            flash('Veuillez choisir une photo sur votre appareil.')
-            return redirect(request.url)
-        if file:
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            new_photo = Photo(filename=filename, owner=current_user)
-            db.session.add(new_photo)
-            db.session.commit()
-            return redirect(url_for('profile'))
-    return render_template('upload.html')
+    if 'file' not in request.files:
+        flash('No file part')
+        return redirect(url_for('profile'))
+    file = request.files['file']
+    if file.filename == '':
+        flash('No selected file')
+        return redirect(url_for('profile'))
+    if file:
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        new_photo = Photo(filename=filename, owner=current_user)
+        db.session.add(new_photo)
+        db.session.commit()
+        return redirect(url_for('profile'))
+
 
 
 # Route pour télécharger une photo
