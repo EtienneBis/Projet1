@@ -117,26 +117,6 @@ def download_photo(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
-# Route pour supprimer une photo
-@app.route('/delete_photo/<int:photo_id>', methods=['POST'])
-@login_required
-def delete_photo(photo_id):
-    photo = Photo.query.get_or_404(photo_id)
-    if photo.owner != current_user:
-        flash('You do not have permission to delete this photo')
-        return redirect(url_for('profile'))
-    
-    # Delete the file from the filesystem
-    photo_path = os.path.join(app.config['UPLOAD_FOLDER'], photo.filename)
-    if os.path.exists(photo_path):
-        os.remove(photo_path)
-    
-    # Delete the photo record from the database
-    db.session.delete(photo)
-    db.session.commit()
-    
-    flash('Photo deleted successfully')
-    return redirect(url_for('profile'))
 
 
 
