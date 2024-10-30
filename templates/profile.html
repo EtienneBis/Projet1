@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Photos</title>
+    <title>Vos Photos</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_profile.css') }}">
     <script>
         function validateForm(event) {
@@ -17,7 +17,7 @@
     </script>
 </head>
 <body>
-    <h1>Hello, {{ current_user.username }}!</h1>
+    <h1>Bonjour, {{ current_user.username }}!</h1>
     <h2>Vos Photos</h2>
     <form action="{{ url_for('upload_file') }}" method="POST" enctype="multipart/form-data" onsubmit="validateForm(event)">
         <input type="file" id="fileInput" name="file">
