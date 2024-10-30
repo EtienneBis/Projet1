@@ -1,0 +1,24 @@
+Projet
+│
+├── .github
+│   └── workflows
+│       └── cicd.yml           # Workflow pour l'automatisation CI/CD
+│
+├── database
+│   └── bdd                    # Base de données (vide sur GitHub, rempli sur Alwaysdata)
+│
+├── static                     # Contient les fichiers statiques
+│   ├── css                    # Dossier pour les fichiers CSS
+│   └── images                 # Dossier pour les images (vide sur GitHub, rempli sur Alwaysdata)
+│
+├── templates                  # Contient les fichiers HTML
+│   ├── home.html
+│   ├── login.html
+│   ├── profile.html
+│   └── signup.html
+│
+├── README.md                  # Documentation du projet
+│
+└── __init__.py                # Initialise le package de l'application
+
+
